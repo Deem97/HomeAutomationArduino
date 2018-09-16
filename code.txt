@@ -1,0 +1,99 @@
+char uip[10];
+int datacount;
+int count = 0;
+bool sysact = false;
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(2, OUTPUT);
+  pinMode(3, OUTPUT);
+  digitalWrite(3, HIGH);
+  pinMode(8, OUTPUT);
+  pinMode(9, OUTPUT);
+
+}
+
+void loop() {
+
+  datacount = Serial.available();
+  if (datacount > 0) {
+    uip[count] = Serial.read();
+    count++;
+  }
+  if (count == 8) {
+    //ACTIVATE CODE
+    if (uip[0] == '#' && uip[1] == '9' && uip[2] == '1' && uip[3] == '2' && uip[4] == '3' && uip[5] == '4' && uip[6] == '5' && uip[7] == '*') {
+      sysact = true;
+      digitalWrite(2, HIGH);
+      digitalWrite(3, LOW);
+      count = 0;
+    }
+    //DEACTIVATE CODE
+    if (uip[0] == '#' && uip[1] == '8' && uip[2] == '5' && uip[3] == '4' && uip[4] == '3' && uip[5] == '2' && uip[6] == '1' && uip[7] == '*') {
+      sysact = false;
+      digitalWrite(2, LOW);
+      digitalWrite(3, HIGH);
+      count = 0;
+    }
+
+  }
+
+  //LIGHT CONTROLING WHEN SYSTEM ACTIVATE
+  if (count == 6 && uip[1] == '7' && sysact == true) {
+    if (uip[0] == '#' && uip[1] == '7' && uip[2] == '0' && uip[3] == '1' && uip[4] == '1' && uip[5] == '*') {
+      digitalWrite(8, HIGH);
+      count = 0;
+    }
+
+    if (uip[0] == '#' && uip[1] == '7' && uip[2] == '0' && uip[3] == '1' && uip[4] == '0' && uip[5] == '*') {
+      digitalWrite(8, LOW);
+      count = 0;
+    }
+
+
+
+    if (uip[0] == '#' && uip[1] == '7' && uip[2] == '0' && uip[3] == '2' && uip[4] == '1' && uip[5] == '*') {
+      digitalWrite(9, HIGH);
+      count = 0;
+    }
+
+    if (uip[0] == '#' && uip[1] == '7' && uip[2] == '0' && uip[3] == '2' && uip[4] == '0' && uip[5] == '*') {
+      digitalWrite(9, LOW);
+      count = 0;
+    }
+  }
+
+
+  if (count == 8 && uip[1]=='6' && sysact == true){
+    if(uip[0] == '#' && uip[1] == '6' && uip[2] == '0' && uip[3]=='1' && uip[4]=='0' && uip[7]=='*'){
+      
+        int x = uip[5]-48;
+        Serial.println(x);
+        int y = uip[6]-48;
+        Serial.println(y);
+        int z = ((x*10)+y)*1000;
+        
+        digitalWrite(8, HIGH);
+                Serial.println(z);
+        delay(z);
+
+        digitalWrite(8, LOW);
+      
+    }
+    count =0;
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
+
